@@ -1,5 +1,6 @@
 {
     "pathParameters": {
-        "word": "taste"
+        "length": 6,
+        "word": "teller"
     }
 }

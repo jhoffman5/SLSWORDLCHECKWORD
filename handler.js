@@ -8,6 +8,7 @@ const client = new S3Client() // Pass in opts to S3 if necessary
 const aws = require('aws-sdk');
 const { exit } = require('process');
 const s3 = new aws.S3(); // Pass in opts to S3 if necessary
+const bucket = 'w3.hoffmanjoshua.net';
 
 var getWordParams = {
     Bucket: 'w3.hoffmanjoshua.net', // your bucket name,
@@ -22,9 +23,12 @@ var getDictParams = {
 
 module.exports.checkword = async (event) => {
   var guessWord = event.pathParameters.word;
-  var wordlWord = await getObject(getWordParams.Bucket, getWordParams.Key);
+  var length = parseInt(event.pathParameters.length);
 
-  var isValidWord = (wordlWord.length == guessWord.length) ? await checkIsValidWord(guessWord) : false;
+  var getWordlOfTheDayKey = `wordl/${length}LetterWordOfTheDay.txt`;
+  var wordlWord = await getObject(bucket, getWordlOfTheDayKey);
+
+  var isValidWord = (wordlWord.length == guessWord.length && guessWord.length == length) ? await checkIsValidWord(guessWord, length) : false;
 
   if(isValidWord) {
     var scoringMatrix = scoreWord(wordlWord, guessWord);
@@ -84,7 +88,7 @@ function getObject (Bucket, Key) {
 }
 
 function scoreWord (wordlWord, word) {
-  var returnMapping = new Array(word.length).fill(0);
+  var returnMapping = new Array(wordlWord.length).fill(0);
   for(var letter in word)
   {
     if(wordlWord[letter] == word[letter]) // exact match
@@ -98,9 +102,10 @@ function scoreWord (wordlWord, word) {
   return returnMapping;
 }
 
-async function checkIsValidWord(word) {
-  console.log("same length")
-  const wordlDict = JSON.parse(await getObject(getDictParams.Bucket, getDictParams.Key));
+async function checkIsValidWord(word, length) {
+
+  var getAllWordsAtLengthKey = `wordl/all${length}LetterWordsTree.json`;
+  const wordlDict = JSON.parse(await getObject(bucket, getAllWordsAtLengthKey));
 
   var possibleLetters = wordlDict;
 
