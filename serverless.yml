@@ -13,3 +13,9 @@ functions:
       - httpApi:
           path: /date/{date}/length/{length}/word/{word}
           method: get
+  getword:
+    handler: handler.getword
+    events:
+      - httpApi:
+        path: /date/{date}/length/{length}
+        method: get

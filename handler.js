@@ -6,7 +6,6 @@ const { GetObjectCommand, S3Client } = require('@aws-sdk/client-s3')
 const client = new S3Client() // Pass in opts to S3 if necessary
 
 const aws = require('aws-sdk');
-const { exit } = require('process');
 const s3 = new aws.S3(); // Pass in opts to S3 if necessary
 const bucket = '567dle';
 
@@ -27,7 +26,6 @@ module.exports.checkword = async (event) => {
   var length = parseInt(event.pathParameters.length);
 
   var getWordlOfTheDayKey = `${length}/${date}/wordOfTheDay.txt`;
-  console.log(getWordlOfTheDayKey);
   var wordlWord = await getObject(bucket, getWordlOfTheDayKey);
 
   var isValidWord = (wordlWord.length == guessWord.length && guessWord.length == length) ? await checkIsValidWord(guessWord, length) : false;
@@ -120,4 +118,38 @@ async function checkIsValidWord(word, length) {
   }
   return true;
 
+}
+
+module.exports.getword = async (event) => {
+  try{
+    var date = event.pathParameters.date;
+    var length = parseInt(event.pathParameters.length);
+
+    var getWordlOfTheDayKey = `${length}/${date}/wordOfTheDay.txt`;
+    var wordlWord = await getObject(bucket, getWordlOfTheDayKey);
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify(
+        {
+          word: wordlWord,
+          input: event
+        },
+        null,
+        2
+      ),
+    };
+  } catch (e) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify(
+        {
+          message: "Internal Server Error",
+          input: event,
+        },
+        null,
+        2
+      ),
+    }; 
+  }
 }
