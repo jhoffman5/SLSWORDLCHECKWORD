@@ -11,5 +11,5 @@ functions:
     handler: handler.checkword
     events:
       - httpApi:
-          path: /length/{length}/word/{word}
+          path: /date/{date}/length/{length}/word/{word}
           method: get

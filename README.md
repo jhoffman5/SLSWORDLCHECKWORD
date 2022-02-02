@@ -21,7 +21,7 @@ This template does not include any kind of persistence (database). For more adva
 ### Invoke
 
 ```
-$ serverless invoke local -f checkword --data params.json
+$ serverless invoke local -f checkword -p params.json
 ```
 
 ### Deployment

@@ -1,6 +1,7 @@
 {
     "pathParameters": {
         "length": 6,
-        "word": "teller"
+        "word": "teller",
+        "date": "2022-02-01"
     }
 }

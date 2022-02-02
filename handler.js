@@ -8,7 +8,7 @@ const client = new S3Client() // Pass in opts to S3 if necessary
 const aws = require('aws-sdk');
 const { exit } = require('process');
 const s3 = new aws.S3(); // Pass in opts to S3 if necessary
-const bucket = 'w3.hoffmanjoshua.net';
+const bucket = '567dle';
 
 var getWordParams = {
     Bucket: 'w3.hoffmanjoshua.net', // your bucket name,
@@ -22,10 +22,12 @@ var getDictParams = {
 
 
 module.exports.checkword = async (event) => {
-  var guessWord = event.pathParameters.word;
+  var guessWord = (event.pathParameters.word).toString().toLowerCase();
+  var date = event.pathParameters.date;
   var length = parseInt(event.pathParameters.length);
 
-  var getWordlOfTheDayKey = `wordl/${length}LetterWordOfTheDay.txt`;
+  var getWordlOfTheDayKey = `${length}/${date}/wordOfTheDay.txt`;
+  console.log(getWordlOfTheDayKey);
   var wordlWord = await getObject(bucket, getWordlOfTheDayKey);
 
   var isValidWord = (wordlWord.length == guessWord.length && guessWord.length == length) ? await checkIsValidWord(guessWord, length) : false;
@@ -104,7 +106,7 @@ function scoreWord (wordlWord, word) {
 
 async function checkIsValidWord(word, length) {
 
-  var getAllWordsAtLengthKey = `wordl/all${length}LetterWordsTree.json`;
+  var getAllWordsAtLengthKey = `${length}/allWordsTree.json`;
   const wordlDict = JSON.parse(await getObject(bucket, getAllWordsAtLengthKey));
 
   var possibleLetters = wordlDict;
